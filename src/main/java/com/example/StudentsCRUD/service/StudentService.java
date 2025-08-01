@@ -231,10 +231,10 @@ public class StudentService {
         studentRepo.deleteById(sId);
         ResponseMessageDTO responseMessageDTO = new ResponseMessageDTO("Student deleted successfully");
 
-        responseMessageDTO.add(linkTo(methodOn(StudentController.class)
+        /*responseMessageDTO.add(linkTo(methodOn(StudentController.class)
                 .getAllStudents(0,2,"stuName","asc"))
                 .withRel("allStudents")
-                .withType("GET"));
+                .withType("GET"));*/
 
 
         responseMessageDTO.add(linkTo(methodOn(StudentController.class)

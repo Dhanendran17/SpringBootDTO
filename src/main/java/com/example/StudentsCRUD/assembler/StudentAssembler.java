@@ -29,10 +29,10 @@ public class StudentAssembler implements RepresentationModelAssembler<Student, E
                         .withSelfRel()
                         .withType("GET"),
 
-                linkTo(methodOn(StudentController.class)
+                /*linkTo(methodOn(StudentController.class)
                         .getAllStudents(0, 2, "stuName", "asc"))
                         .withRel("allStudents")
-                        .withType("GET"),
+                        .withType("GET"),*/
 
                 linkTo(methodOn(StudentController.class)
                         .addStudent(null))

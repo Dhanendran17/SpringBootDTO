@@ -33,17 +33,9 @@ public class StudentController
     }
 
     @GetMapping("/students")
-    public PagedModel<EntityModel<ResponseDTO>> getAllStudents(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "stuName") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
-
-        Sort sort = direction.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+    public PagedModel<EntityModel<ResponseDTO>> getAllStudents(Pageable pageable)
+    {
+        //Pageable pageable = PageRequest.of(page, size, sort);
         return service.getAllStudents(pageable);
     }
 

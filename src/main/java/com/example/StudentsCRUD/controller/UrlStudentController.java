@@ -23,7 +23,7 @@ public class UrlStudentController {
             @PathVariable String stuName,
             @PathVariable String stuEmail,
             @PathVariable int deptId,
-            @PathVariable String deptName,
+            @PathVariable String deptName,     //1 Passing the entire Json Body to
             @PathVariable String password) {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setStuName(stuName);
