@@ -6,6 +6,9 @@ import com.example.StudentsCRUD.dto.ResponseDTO;
 import com.example.StudentsCRUD.dto.ResponseMessageDTO;
 import com.example.StudentsCRUD.model.Student;
 import com.example.StudentsCRUD.service.StudentService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +27,10 @@ import java.util.List;
 public class StudentController
 {
     @Autowired
-    private StudentService service;
+    private final StudentService service;
+    public StudentController(StudentService service) {
+        this.service = service;
+    }
 
     @GetMapping("/students")
     public PagedModel<EntityModel<ResponseDTO>> getAllStudents(
