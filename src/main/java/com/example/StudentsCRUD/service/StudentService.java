@@ -37,10 +37,13 @@ public class StudentService {
     private StudentMapper studentMapper;
 
     @Autowired
+    private PagedResourcesAssembler<Student> pagedResourcesAssembler;
+
+    @Autowired
     private StudentAssembler studentAssembler;
 
     //Get all Student list
-    public PagedModel<EntityModel<ResponseDTO>> getAllStudents(int page, int size, String sortField, String sortDirection, PagedResourcesAssembler<ResponseDTO> pagedResourcesAssembler)
+    public PagedModel<EntityModel<ResponseDTO>> getAllStudents(Pageable pageable)
     {
         //Normal DTO
         /*return studentRepo.findAll()
@@ -115,16 +118,9 @@ public class StudentService {
         });*/
 
         //PagedResourceAssembler
-        Sort sort = sortDirection.equalsIgnoreCase("asc")
-                ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Student> studentPage = studentRepo.findAll(pageable); //1
-        Page<ResponseDTO> dtoPage = studentPage.map(student ->
-                studentMapper.toDTO(student, student.getDeptName())  //2  //3 URL
-        );
-        return pagedResourcesAssembler.toModel(dtoPage, studentAssembler);
+        //Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Student> studentPage = studentRepo.findAll(pageable);
+        return pagedResourcesAssembler.toModel(studentPage, studentAssembler);
     }
 
     //Get the particular student list by Id
@@ -152,8 +148,7 @@ public class StudentService {
 
         //Resourse assembler
         Student student = studentRepo.findById(s_id).orElseThrow(() -> new RuntimeException("Student not found"));
-        ResponseDTO dto = studentMapper.toDTO(student, student.getDeptName());
-        return studentAssembler.toModel(dto);
+        return studentAssembler.toModel(student);
     }
 
     //Add the student in the list
@@ -191,9 +186,7 @@ public class StudentService {
         //Resource Assembler
         Student student = studentMapper.toEntity(requestDTO);
         Student saved =  studentRepo.save(student);
-        ResponseDTO dto = studentMapper.toDTO(saved, saved.getDeptName());
-        return studentAssembler.toModel(dto);
-
+        return studentAssembler.toModel(student);
     }
 
     //Update the student by Id
@@ -211,7 +204,6 @@ public class StudentService {
             student.setPassword(requestDTO.getPassword());
 
             Student updated = studentRepo.save(student);
-            ResponseDTO dto = studentMapper.toDTO(updated, updated.getDeptName());
 
             /*dto.add(linkTo(methodOn(StudentController.class)
                     .getStudentById(sId))
@@ -224,7 +216,7 @@ public class StudentService {
                     .withType("DELETE"));
 
             return dto;*/
-            return studentAssembler.toModel(dto);
+            return studentAssembler.toModel(student);
         }
         else {
             throw new RuntimeException("Student with ID " + sId + " not found");
@@ -240,7 +232,7 @@ public class StudentService {
         ResponseMessageDTO responseMessageDTO = new ResponseMessageDTO("Student deleted successfully");
 
         responseMessageDTO.add(linkTo(methodOn(StudentController.class)
-                .getAllStudents(0,2,"stuName","asc",pagedResourcesAssembler))
+                .getAllStudents(0,2,"stuName","asc"))
                 .withRel("allStudents")
                 .withType("GET"));
 

@@ -4,9 +4,13 @@ import com.example.StudentsCRUD.dto.PaginatedResponse;
 import com.example.StudentsCRUD.dto.RequestDTO;
 import com.example.StudentsCRUD.dto.ResponseDTO;
 import com.example.StudentsCRUD.dto.ResponseMessageDTO;
+import com.example.StudentsCRUD.model.Student;
 import com.example.StudentsCRUD.service.StudentService;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -27,10 +31,14 @@ public class StudentController
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "stuName") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
-            PagedResourcesAssembler<ResponseDTO> pagedResourcesAssembler) {
+            @RequestParam(defaultValue = "asc") String direction) {
 
-        return service.getAllStudents(page, size, sortBy, direction, pagedResourcesAssembler);
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return service.getAllStudents(pageable);
     }
 
     @GetMapping("/students/{s_id}")
